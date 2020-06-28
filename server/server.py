@@ -52,7 +52,7 @@ async def visualize(request):
 	:param request:
 	:return:
 	"""
-	starttime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()-3600))
+	starttime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()-600))
 	endtime = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
 	# 防止未监控时，访问页面报错
 	if master.slaves['ip']:
@@ -60,7 +60,7 @@ async def visualize(request):
 	else:
 		monitor_list = {'port': []}
 	return aiohttp_jinja2.render_template('visualize.html', request, context={'disks': master.slaves['disk'],
-		'ip': master.slaves['ip'], 'port': monitor_list['port'], 'starttime': starttime, 'endtime': endtime})
+		'ip': master.slaves['ip'], 'port': monitor_list['port'], 'starttime': starttime, 'endtime': endtime, 'row_name': ['75%', '90%', '95%', '99%']})
 
 
 async def course(request):
@@ -170,31 +170,30 @@ async def plot_monitor(request):
 	disk = data.get('disk')         # 磁盘号
 	if host in master.slaves['ip']:
 		try:
-			row_name = ['75%', '90%', '95%', '99%']
 			if type_ == 'port':		# 如果选择端口，则可视化端口的CPU、内存，统计系统的IO和带宽
-				res = draw_data_from_db(host=host, port=port_pid, start_time=start_time, end_time=end_time, disk=disk)
+				res = draw_data_from_db(host=host, port=port_pid, startTime=start_time, endTime=end_time, disk=disk)
 				if res['code'] == 0:
 					raise Exception(res['message'])
-				res.update(master.get_gc(host, master.slaves['port'][master.slaves['ip'].index(host)], f'getGC/{port_pid}'))
-				if res['fgc'] == -1 and res['ygc'] == -1:
+				res.update({'gc': master.get_gc(host, master.slaves['port'][master.slaves['ip'].index(host)], f'getGC/{port_pid}')})
+				if res['gc'][0] == -1 and res['gc'][2] == -1:
 					res['flag'] = 0
-				return aiohttp_jinja2.render_template('figure.html', request, context={'row_name': row_name, 'datas': res})
+				return web.json_response(res)
 
 			if type_ == 'pid':		# 如果选择进程号，则可视化端口的CPU、内存，统计系统的IO和带宽
-				res = draw_data_from_db(host=host, pid=port_pid, start_time=start_time, end_time=end_time, disk=disk)
+				res = draw_data_from_db(host=host, pid=port_pid, startTime=start_time, endTime=end_time, disk=disk)
 				if res['code'] == 0:
 					raise Exception(res['message'])
-				res.update(master.get_gc(host, master.slaves['port'][master.slaves['ip'].index(host)], f'getGC/{port_pid}'))
-				if res['fgc'] == -1 and res['ygc'] == -1:
+				res.update({'gc': master.get_gc(host, master.slaves['port'][master.slaves['ip'].index(host)], f'getGC/{port_pid}')})
+				if res['gc'][0] == -1 and res['gc'][2] == -1:
 					res['flag'] = 0
-				return aiohttp_jinja2.render_template('figure.html', request, context={'row_name': row_name, 'datas': res})
+				return web.json_response(res)
 
 			if type_ == 'system':		# 如果选择系统，则可视化系统的CPU、内存、IO和带宽
-				res = draw_data_from_db(host=host, start_time=start_time, end_time=end_time, system=1, disk=disk)
+				res = draw_data_from_db(host=host, startTime=start_time, endTime=end_time, system=1, disk=disk)
 				if res['code'] == 0:
 					raise Exception(res['message'])
 				res['flag'] = 0
-				return aiohttp_jinja2.render_template('figure.html', request, context={'row_name': row_name, 'datas': res})
+				return web.json_response(res)
 
 		except Exception as err:
 			logger.error(err)

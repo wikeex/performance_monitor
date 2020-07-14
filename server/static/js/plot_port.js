@@ -9,8 +9,8 @@ function plot_port(myChart, tables1, tables2, x_label, cpu, mem, jvm, tcp, time_
         return a - b;
     });
 
-    let start_time= new Date(x_label[0].replace(new RegExp("-","gm"),"/")).getTime();
-    let end_time= new Date(x_label[x_label.length - 1].replace(new RegExp("-","gm"),"/")).getTime();
+    let start_time = Date.parse(new Date(x_label[0]));
+    let end_time = Date.parse(new Date(x_label[x_label.length - 1]));
     let duration = ((end_time - start_time) / 3600000).toFixed(2);
 
     option = {
@@ -287,8 +287,8 @@ function plot_port(myChart, tables1, tables2, x_label, cpu, mem, jvm, tcp, time_
         let IO_sorted = IO_zoom.sort(function (a, b) {return a - b;});
         let net_sorted = net_zoom.sort(function (a, b) {return a - b;});
 
-        let start_time= new Date(x_label[start_index].replace(new RegExp("-","gm"),"/")).getTime();
-        let end_time= new Date(x_label[end_index].replace(new RegExp("-","gm"),"/")).getTime();
+        let start_time = Date.parse(new Date(x_label[start_index]));
+        let end_time = Date.parse(new Date(x_label[end_index]));
         let duration = ((end_time - start_time) / 3600000).toFixed(2);
 
         if (is_jvm === 1){

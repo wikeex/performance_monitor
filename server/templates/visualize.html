@@ -129,11 +129,13 @@
                         return;
                     }
 
+                    $('#figure').removeAttr("_echarts_instance_").empty();
                     let figure = document.getElementById('figure');
                     let percentile = document.getElementById('container1');
                     let table1 = document.getElementById('percentile');
                     let gc = document.getElementById('container2');
                     let table2 = document.getElementById('gc');
+
                     if (data['flag'] === 1) {
                         percentile.style['float'] = 'left';
                         percentile.style['margin-left'] = '20px';

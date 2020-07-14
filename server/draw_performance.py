@@ -123,10 +123,10 @@ def draw_data_from_db(host, port=None, pid=None, startTime=None, endTime=None, s
         res.update({'post_data': post_data})
         logger.info(f'查询数据库耗时：{time.time() - s_time}')
 
-        s_time = time.time()
-        lines = get_lines(post_data)      # 计算百分位数，75%、90%、95%、99%
-        res.update(lines)
-        logger.info(f'计算百分位数耗时：{time.time() - s_time}')
+        # s_time = time.time()
+        # lines = get_lines(post_data)      # 计算百分位数，75%、90%、95%、99%
+        # res.update(lines)
+        # logger.info(f'计算百分位数耗时：{time.time() - s_time}')
         del connection
         del post_data
         return res

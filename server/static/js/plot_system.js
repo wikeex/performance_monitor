@@ -1,25 +1,19 @@
 function plot_system(myChart, tables1, tables2, x_label, cpu, mem, IO, disk_r, disk_w, net, rec, trans, tcp, retrans) {
-    let cpu_sorted = cpu.sort(function (a, b) {
-        return a - b;
-    });
-    let IO_sorted = IO.sort(function (a, b) {
-        return a - b;
-    });
-    let disk_r_sorted = disk_r.sort(function (a, b) {
-        return a - b;
-    });
-    let disk_w_sorted = disk_w.sort(function (a, b) {
-        return a - b;
-    });
-    let net_sorted = net.sort(function (a, b) {
-        return a - b;
-    });
-    let rec_sorted = rec.sort(function (a, b) {
-        return a - b;
-    });
-    let trans_sorted = trans.sort(function (a, b) {
-        return a - b;
-    });
+    let cpu_sorted = [...cpu];
+    let IO_sorted = [...IO];
+    let disk_r_sorted = [...disk_r];
+    let disk_w_sorted = [...disk_w];
+    let net_sorted = [...net];
+    let rec_sorted = [...rec];
+    let trans_sorted = [...trans];
+
+    cpu_sorted.sort();
+    IO_sorted.sort();
+    disk_r_sorted.sort();
+    disk_w_sorted.sort();
+    net_sorted.sort();
+    rec_sorted.sort();
+    trans_sorted.sort();
 
     let start_time = Date.parse(new Date(x_label[0]));
     let end_time = Date.parse(new Date(x_label[x_label.length - 1]));
@@ -255,7 +249,7 @@ function plot_system(myChart, tables1, tables2, x_label, cpu, mem, IO, disk_r, d
                 gridIndex: 2,
                 name: 'IO(%)',
                 type: 'value',
-                max: Math.max(IO).toFixed(2),
+                max: Math.max(...IO).toFixed(2),
             },
             {
                 gridIndex: 3,
@@ -442,24 +436,24 @@ function plot_system(myChart, tables1, tables2, x_label, cpu, mem, IO, disk_r, d
     myChart.on('dataZoom', function (param) {
         let start_index = myChart.getOption().dataZoom[0].startValue;
         let end_index = myChart.getOption().dataZoom[0].endValue;
-        let cpu_zoom = cpu.slice(start_index, end_index);
+        let cpu_sorted = cpu.slice(start_index, end_index);
         let mem_zoom = mem.slice(start_index, end_index);
-        let IO_zoom = IO.slice(start_index, end_index);
-        let disk_r_zoom = disk_r.slice(start_index, end_index);
-        let disk_w_zoom = disk_w.slice(start_index, end_index);
-        let rec_zoom = rec.slice(start_index, end_index);
-        let trans_zoom = trans.slice(start_index, end_index);
-        let net_zoom = net.slice(start_index, end_index);
+        let IO_sorted = IO.slice(start_index, end_index);
+        let disk_r_sorted = disk_r.slice(start_index, end_index);
+        let disk_w_sorted = disk_w.slice(start_index, end_index);
+        let rec_sorted = rec.slice(start_index, end_index);
+        let trans_sorted = trans.slice(start_index, end_index);
+        let net_sorted = net.slice(start_index, end_index);
         let tcp_zoom = tcp.slice(start_index, end_index);
         let retrans_zoom = retrans.slice(start_index, end_index);
 
-        let cpu_sorted = cpu_zoom.sort(function (a, b) {return a -b;});
-        let IO_sorted = IO_zoom.sort(function (a, b) {return a - b;});
-        let disk_r_sorted = disk_r_zoom.sort(function (a, b) {return a - b;});
-        let disk_w_sorted = disk_w_zoom.sort(function (a, b) {return a - b;});
-        let net_sorted = net_zoom.sort(function (a, b) {return a - b;});
-        let rec_sorted = rec_zoom.sort(function (a, b) {return a - b;});
-        let trans_sorted = trans_zoom.sort(function (a, b) {return a - b;});
+        cpu_sorted.sort();
+        IO_sorted.sort();
+        disk_r_sorted.sort();
+        disk_w_sorted.sort();
+        net_sorted.sort();
+        rec_sorted.sort();
+        trans_sorted.sort();
 
         let start_time = Date.parse(new Date(x_label[start_index]));
         let end_time = Date.parse(new Date(x_label[end_index]));
@@ -468,8 +462,8 @@ function plot_system(myChart, tables1, tables2, x_label, cpu, mem, IO, disk_r, d
             title: [
                 {text: 'CPU(%), 最大值: ' + cpu_sorted[cpu_sorted.length - 1].toFixed(2) + '%, 90%Line: ' + cpu_sorted[parseInt(0.9 * cpu_sorted.length)].toFixed(2) + '%, 时间: ' + duration + 'h', x: 'center', y: 5, textStyle: {fontSize: 13}},
                 {text: '内存(G), 最大值: ' + Math.max(...mem_zoom).toFixed(2) + 'G, 时间: ' + duration + 'h', x: 'center', y: 350, textStyle: {fontSize: 13}},
-                {text: 'IO, IO最大值: ' + Math.max(...IO_zoom).toFixed(2) + '%, 读磁盘最大值: ' + Math.max(...disk_r_zoom).toFixed(2) + 'Mb/s, 写磁盘最大值: ' + Math.max(...disk_w_zoom).toFixed(2) + 'Mb/s, 时间: ' + duration + 'h', x: 'center', y: 700, textStyle: {fontSize: 13}},
-                {text: '带宽, 带宽最大值: ' + Math.max(...net_zoom).toFixed(2) + '%, 接收速率最大值: ' + Math.max(...rec_zoom).toFixed(2) + 'Mb/s, 发送速率最大值: ' + Math.max(...trans_zoom).toFixed(2) + 'Mb/s, 时间: ' + duration + 'h', x: 'center', y: 1050, textStyle: {fontSize: 13}},
+                {text: 'IO, IO最大值: ' + Math.max(...IO_sorted).toFixed(2) + '%, 读磁盘最大值: ' + Math.max(...disk_r_sorted).toFixed(2) + 'Mb/s, 写磁盘最大值: ' + Math.max(...disk_w_sorted).toFixed(2) + 'Mb/s, 时间: ' + duration + 'h', x: 'center', y: 700, textStyle: {fontSize: 13}},
+                {text: '带宽, 带宽最大值: ' + Math.max(...net_sorted).toFixed(2) + '%, 接收速率最大值: ' + Math.max(...rec_sorted).toFixed(2) + 'Mb/s, 发送速率最大值: ' + Math.max(...trans_sorted).toFixed(2) + 'Mb/s, 时间: ' + duration + 'h', x: 'center', y: 1050, textStyle: {fontSize: 13}},
                 {text: 'TCP, TCP连接数最大值: ' + Math.max(...tcp_zoom) + ', TCP重传率最大值: '+ Math.max(...retrans_zoom).toFixed(2) + '%, 时间: ' + duration + 'h', x: 'center', y: 1400, textStyle: {fontSize: 13}}]});
 
         tables1.rows[1].cells[1].innerHTML = cpu_sorted[parseInt(0.75 * cpu_sorted.length)].toFixed(2);

@@ -1,13 +1,11 @@
 function plot_port(myChart, tables1, tables2, x_label, cpu, mem, jvm, tcp, time_wait, close_wait, is_jvm, IO, net) {
-    let cpu_sorted = cpu.sort(function (a, b) {
-        return a - b;
-    });
-    let IO_sorted = IO.sort(function (a, b) {
-        return a - b;
-    });
-    let net_sorted = net.sort(function (a, b) {
-        return a - b;
-    });
+    let cpu_sorted = [...cpu];
+    let IO_sorted = [...IO];
+    let net_sorted = [...net];
+
+    cpu_sorted.sort();
+    IO_sorted.sort();
+    net_sorted.sort();
 
     let start_time = Date.parse(new Date(x_label[0]));
     let end_time = Date.parse(new Date(x_label[x_label.length - 1]));
@@ -279,13 +277,13 @@ function plot_port(myChart, tables1, tables2, x_label, cpu, mem, jvm, tcp, time_
     myChart.on('dataZoom', function (param) {
         let start_index = myChart.getOption().dataZoom[0].startValue;
         let end_index = myChart.getOption().dataZoom[0].endValue;
-        let cpu_zoom = cpu.slice(start_index, end_index);
-        let IO_zoom = IO.slice(start_index, end_index);
-        let net_zoom = net.slice(start_index, end_index);
+        let cpu_sorted = cpu.slice(start_index, end_index);
+        let IO_sorted = IO.slice(start_index, end_index);
+        let net_sorted = net.slice(start_index, end_index);
 
-        let cpu_sorted = cpu_zoom.sort(function (a, b) {return a -b;});
-        let IO_sorted = IO_zoom.sort(function (a, b) {return a - b;});
-        let net_sorted = net_zoom.sort(function (a, b) {return a - b;});
+        cpu_sorted.sort();
+        IO_sorted.sort();
+        net_sorted.sort();
 
         let start_time = Date.parse(new Date(x_label[start_index]));
         let end_time = Date.parse(new Date(x_label[end_index]));

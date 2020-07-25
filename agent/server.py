@@ -8,10 +8,27 @@ import asyncio
 import traceback
 from aiohttp import web
 
-from logger import logger, cfg
+from logger import logger, cfg, handle_exception
 from performance_monitor import PerMon, port_to_pid
 
 permon = PerMon()
+
+
+@handle_exception(is_return=True, default_value='127.0.0.1')
+def get_ip():
+	"""
+	获取当前服务器IP地址
+	:return: IP
+	"""
+	result = os.popen("hostname -I |awk '{print $1}'").readlines()
+	logger.debug(result)
+	if result:
+		IP = result[0].strip()
+	else:
+		logger.warning('未获取到服务器IP地址')
+		IP = '127.0.0.1'
+
+	return IP
 
 
 async def index(request):
@@ -72,7 +89,6 @@ async def run_monitor(request):
 				'code': 2, 'msg': '请求参数异常', 'data': {'host': host, 'port': port, 'pid': None}})
 
 	except Exception as err:
-		logger.error(err)
 		logger.error(traceback.format_exc())
 		return web.json_response({
 			'code': 2, 'msg': err, 'data': {'host': cfg.getServer('host'), 'port': None, 'pid': None}})
@@ -142,8 +158,7 @@ async def get_gc(request):
 		else:
 			fgc = 'NaN'
 
-	except Exception as err:
-		logger.error(err)
+	except Exception:
 		logger.error(traceback.format_exc())
 		ygc, ygct, fgc, fgct, fygc, ffgc = -1, -1, -1, -1, -1, -1
 
@@ -160,7 +175,8 @@ async def main():
 
 	runner = web.AppRunner(app)
 	await runner.setup()
-	site = web.TCPSite(runner, cfg.getServer('host'), cfg.getServer('port'))
+	# site = web.TCPSite(runner, cfg.getServer('host'), cfg.getServer('port'))
+	site = web.TCPSite(runner, get_ip(), cfg.getServer('port'))
 	await site.start()
 
 

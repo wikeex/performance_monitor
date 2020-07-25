@@ -14,8 +14,8 @@ def draw_data_from_db(host, port=None, pid=None, startTime=None, endTime=None, s
     :param host: 客户端服务器IP，必传参数
     :param port: 端口号，即画该端口号的图；可选参数，和pid、system参数互斥，三选一
     :param pid: 进程号，即画该进程号的图；可选参数，和port、system参数互斥，三选一
-    :param start_time: 画图数据开始时间；可选参数
-    :param end_time: 画图数据截止时间；可选参数
+    :param startTime: 画图数据开始时间；可选参数
+    :param endTime: 画图数据截止时间；可选参数
     :param system: 画整个系统CPU和内存图，可选参数，和port、pid参数互斥，三选一
     :param disk: 磁盘号，查看指定磁盘号的IO，可选参数
     :return:
@@ -127,14 +127,11 @@ def draw_data_from_db(host, port=None, pid=None, startTime=None, endTime=None, s
         # lines = get_lines(post_data)      # 计算百分位数，75%、90%、95%、99%
         # res.update(lines)
         # logger.info(f'计算百分位数耗时：{time.time() - s_time}')
-        del connection
-        del post_data
+        del connection, post_data
         return res
 
     except Exception as err:
-        del connection
-        del post_data
-        logger.error(err)
+        del connection, post_data
         logger.error(traceback.format_exc())
         res['message'] = err
         res['code'] = 0

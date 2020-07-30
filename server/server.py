@@ -212,7 +212,7 @@ async def plot_monitor(request):
 				res['flag'] = 0
 				return aiohttp_jinja2.render_template('figure.html', request, context={'row_name': row_name, 'datas': res})
 
-		except Exception:
+		except Exception as err:
 			logger.error(traceback.format_exc())
 			return aiohttp_jinja2.render_template('warn.html', request, context={'msg': err})
 	else:

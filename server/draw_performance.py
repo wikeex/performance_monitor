@@ -192,8 +192,8 @@ def draw(data):
     labels.append(cpu_time[length - 1])
 
     # 数据的开始时间和结束时间，用于计算图中展示数据的总时长
-    start_time = time.mktime(datetime.datetime.strptime(cpu_time[0].split('.')[0], '%Y-%m-%dT%H:%M:%S').timetuple())
-    end_time = time.mktime(datetime.datetime.strptime(cpu_time[-1].split('.')[0], '%Y-%m-%dT%H:%M:%S').timetuple())
+    start_time = time.mktime(datetime.datetime.strptime(cpu_time[0].split('.')[0], '%Y-%m-%d %H:%M:%S').timetuple())
+    end_time = time.mktime(datetime.datetime.strptime(cpu_time[-1].split('.')[0], '%Y-%m-%d %H:%M:%S').timetuple())
 
     if types == 'system':
         fig = plt.figure('figure', figsize=(20, 25))
